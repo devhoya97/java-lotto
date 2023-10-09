@@ -4,6 +4,8 @@ import camp.nextstep.edu.missionutils.test.NsTest;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -108,24 +110,26 @@ class ApplicationTest extends NsTest {
                 .isSorted();
     }
     @Test
-    void getWinningNubers_테스트() {
+    void getWinningNumbers_테스트() {
         //given
         String case1 = "1,2,3,4,5,6";
-        String case2 = "15,2,34,10,21,6";
+        String case2 = "15,2,1,45,30,9";
         InputStream inputStream1 = new ByteArrayInputStream(case1.getBytes());
         InputStream inputStream2 = new ByteArrayInputStream(case2.getBytes());
         //when
         System.setIn(inputStream1);
-        List<Integer> result1 = Application.getWinningNubers();
+        Application.getWinningNubers();
+        List<Integer> result1 = Lotto.getWinningNumbers();
         System.setIn(inputStream2);
-        List<Integer> result2 = Application.getWinningNubers();
+        Application.getWinningNubers();
+        List<Integer> result2 = Lotto.getWinningNumbers();
         //then
         assertThat(result1).doesNotHaveDuplicates()
                 .hasSize(6)
                 .containsAll(Arrays.asList(1,2,3,4,5,6));
         assertThat(result2).doesNotHaveDuplicates()
                 .hasSize(6)
-                .containsAll(Arrays.asList(15,2,34,10,21,6));
+                .containsAll(Arrays.asList(15,2,1,45,30,9));
     }
 
     @Test
@@ -218,10 +222,10 @@ class ApplicationTest extends NsTest {
     }
 
     @Test
-    void getResultCategory_and_getLottoResults_테스트() {
+    void getLottosResult_테스트() {
         //given
-        List<Integer> winningNumbers = Arrays.asList(1,2,3,4,5,6);
-        int bonusNumber = 7;
+        Lotto.setWinningNumbers(Arrays.asList(1,2,3,4,5,6));
+        Lotto.setBonusNumber(7);
         Lotto lotto1 = new Lotto(Arrays.asList(11,12,13,14,15,7));
         Lotto lotto2 = new Lotto(Arrays.asList(1,12,13,14,15,7));
         Lotto lotto3 = new Lotto(Arrays.asList(1,2,13,14,15,7));
@@ -239,27 +243,11 @@ class ApplicationTest extends NsTest {
         lottos.add(lotto6);
         lottos.add(lotto7);
         lottos.add(lotto8);
-        List<Integer> resultsOfLottos = Arrays.asList(0,0,0,0,0,0,0,0);
+        List<Integer> lottosResult = Arrays.asList(0,0,0,0,0,0);
         //when
-        int result1 = Application.getResultCategory(lotto1, winningNumbers, bonusNumber);
-        int result2 = Application.getResultCategory(lotto2, winningNumbers, bonusNumber);
-        int result3 = Application.getResultCategory(lotto3, winningNumbers, bonusNumber);
-        int result4 = Application.getResultCategory(lotto4, winningNumbers, bonusNumber);
-        int result5 = Application.getResultCategory(lotto5, winningNumbers, bonusNumber);
-        int result6 = Application.getResultCategory(lotto6, winningNumbers, bonusNumber);
-        int result7 = Application.getResultCategory(lotto7, winningNumbers, bonusNumber);
-        int result8 = Application.getResultCategory(lotto8, winningNumbers, bonusNumber);
-        resultsOfLottos = Application.getLottosResult(lottos, winningNumbers, bonusNumber);
+        lottosResult = Application.getLottosResult(lottos);
         //then
-        assertThat(result1).isEqualTo(0);
-        assertThat(result2).isEqualTo(1);
-        assertThat(result3).isEqualTo(2);
-        assertThat(result4).isEqualTo(3);
-        assertThat(result5).isEqualTo(4);
-        assertThat(result6).isEqualTo(5);
-        assertThat(result7).isEqualTo(6);
-        assertThat(result8).isEqualTo(7);
-        assertThat(resultsOfLottos).isEqualTo(Arrays.asList(1,1,1,1,1,1,1,1));
+        assertThat(lottosResult).isEqualTo(Arrays.asList(3,1,1,1,1,1));
     }
 
     @Test
